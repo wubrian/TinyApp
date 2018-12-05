@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include partials/_header %>
+</head>
+
+<body>
+    <!-- Add your EJS code here -->
+    <h1>
+      <p>ShortURL: <%= shortURL %>  </p>
+    </h1>
+    <form method="POST" action="/urls/<%= shortURL %>" >
+    <div style="width: 100%;">
+      <input type="text" style="float: left; height: 25px; width: 200px;" id="url" value="<%= longURL%>" name="newurl">
+      <button style="font-size: 20px; margin: 2px; float: left;" id="i">Update</button>
+    </div>
+</body>
+</html>

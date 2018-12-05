@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <% include partials/_header %>
+</head>
+<style type="text/css">
+    div {
+      display: inline-block;
+    }
+/*    input[type="submit"]{
+      width: 700px;
+    }*/
+    .delete{
+      width: 50px;
+      padding: 15px;
+    }
+</style>
+<body>
+    <!-- Add your EJS code here -->
+  <ul>
+    <% for(var url in urls) { %>
+      <% var deleteURL = '/urls/'+ url + '/delete' %>
+      <% var editURL = '/urls/'+ url %>
+      <form method="POST" action= <%= deleteURL %>> <br/>
+        <div><%= url %> &rarr; <a href=<%= urls[url] %> ><%= urls[url] %></a> &nbsp <a href=<%= editURL %> >Edit</a> &nbsp </div>
+        <input class="delete" type="submit" value="Delete">
+      </form>
+    <% } %>
+  </ul>
+</body>
+</html>
+
+
