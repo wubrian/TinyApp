@@ -7,9 +7,6 @@
     div {
       display: inline-block;
     }
-/*    input[type="submit"]{
-      width: 700px;
-    }*/
     .delete{
       width: 50px;
       padding: 15px;
@@ -21,8 +18,11 @@
     <% for(var url in urls) { %>
       <% var deleteURL = '/urls/'+ url + '/delete' %>
       <% var editURL = '/urls/'+ url %>
-      <form method="POST" action= <%= deleteURL %>> <br/>
-        <div><%= url %> &rarr; <a href=<%= urls[url] %> ><%= urls[url] %></a> &nbsp <a href=<%= editURL %> >Edit</a> &nbsp </div>
+      <br/>
+      <form method="POST" action= <%= deleteURL %>>
+        <div>
+          <%= url %> &rarr; <a href=<%= urls[url] %> ><%= urls[url] %></a> &nbsp <a href=<%= editURL %> >Edit</a> &nbsp
+        </div>
         <input class="delete" type="submit" value="Delete">
       </form>
     <% } %>

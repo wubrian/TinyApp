@@ -3,4 +3,23 @@
 <head>
   <title>TinyApp</title>
 </head>
+<style type="text/css">
+  form {
+    display: inline-block;
+  }
+</style>
+<body>
+<% if(username) { %>
+  <form action="/logout" method="POST">
+    <input type="submit" value="Logout">
+  </form>
+<% } else{ %>
+  <form action="/login" method="POST">
+    <input type="text" name="username">
+    <input type="submit" value="Submit">
+  </form>
+<% } %>
+
+
+</body>
 </html>

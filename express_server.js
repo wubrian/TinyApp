@@ -1,6 +1,7 @@
 var express = require("express");
 var app = express();
 var PORT = 8080;
+var cookieParser = require('cookie-parser');
 
 var urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -19,33 +20,42 @@ function generateRandomString() {
   return randomString;
 }
 
-//access POST request parameters
+//use body and cookie parser
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser());
 
+//connect view ejs with server.js
 app.set("view engine", "ejs");
 
 //render urls_index.ejs
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase };
+  let templateVars = {
+    username: req.cookies["username"],
+    urls: urlDatabase
+  };
   res.render("urls_index", templateVars);
 });
 
 //render urls_new.ejs
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+    let templateVars = {
+    username: req.cookies["username"]
+  };
+  res.render("urls_new", templateVars);
 });
-
 
 //render urls_show.ejs
 app.get("/urls/:id", (req, res) => {
-  let templateVars = { shortURL: req.params.id,
-                       longURL: urlDatabase[req.params.id] };
+  let templateVars = {
+    username: req.cookies["username"],
+    shortURL: req.params.id,
+    longURL: urlDatabase[req.params.id]
+  };
   res.render("urls_show", templateVars);
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  // let longURL = ...
   let longURL = urlDatabase[req.params.shortURL];
   if(longURL){
     res.redirect(longURL);
@@ -53,6 +63,7 @@ app.get("/u/:shortURL", (req, res) => {
     res.status(404).end();
   }
 });
+
 
   // add new url to database
 app.post("/urls", (req, res) => {
@@ -74,6 +85,21 @@ app.post("/urls/:id/delete", (req, res) => {
   delete urlDatabase[url];
   res.redirect('/urls');
 });
+
+//login username
+app.post("/login", (req,res) => {
+  let username = "username";
+  res.cookie(username, req.body.username);
+  console.log(req.body.username);
+  res.redirect('/urls');
+});
+
+//logout username
+app.post("/logout", (req,res) => {
+  res.clearCookie("username");
+  res.redirect('/urls');
+});
+
 
 app.get("/", (req, res) => {
   res.send("Hello!");
