@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <% include partials/_header %>
+  <title>URLIndex-TinyApp</title>
+  <style type="text/css">
+      div {
+        display: inline-block;
+      }
+      .delete{
+        width: 50px;
+        padding: 15px;
+      }
+  </style>
 </head>
-<style type="text/css">
-    div {
-      display: inline-block;
-    }
-    .delete{
-      width: 50px;
-      padding: 15px;
-    }
-</style>
 <body>
-    <!-- Add your EJS code here -->
+  <% include partials/_header %>
   <ul>
     <% for(var url in urls) { %>
       <% var deleteURL = '/urls/'+ url + '/delete' %>

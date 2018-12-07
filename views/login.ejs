@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Login-TinyApp</title>
+  <style type="text/css">
+  form {
+    display: inline-block;
+  }
+  .login {
+    height: 50px;
+    font-size:25px;
+  }
+  </style>
+</head>
+<body>
+<% include partials/_header %>
+
+  <form action="/login" method="POST">
+    <label for="Email">
+      Email
+    </label>
+    <input class="login" type="email" name="email" >
+    <label for="Password">
+      Password
+    </label>
+    <input class="login" type="password" name="password" >
+    <input type="submit" value="Login">
+  </form>
+
+</body>
+</html>

@@ -1,25 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>TinyApp</title>
-</head>
-<style type="text/css">
-  form {
-    display: inline-block;
-  }
-</style>
-<body>
-<% if(username) { %>
+<header>
+<% if(user) { %>
   <form action="/logout" method="POST">
     <input type="submit" value="Logout">
+    <br>
+    <a href='/register'>Register Link</a>
   </form>
 <% } else{ %>
-  <form action="/login" method="POST">
-    <input type="text" name="username">
-    <input type="submit" value="Submit">
-  </form>
+    <a href='/login'>Login Link</a>
 <% } %>
+</header>
 
-
-</body>
-</html>
