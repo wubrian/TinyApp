@@ -112,7 +112,7 @@ app.get("/urls", (req, res) => {
   if(templateVars.user){
     res.render("urls_index", templateVars);
   }else{
-    res.redirect("/register");
+    res.redirect("/login");
   }
 });
 
@@ -130,56 +130,71 @@ app.get("/urls/new", (req, res) => {
 
 //GET URLS/:id
 app.get("/urls/:id", (req, res) => {
-  let templateVars = {
-    user: users[req.session.userID],
-    shortURL: req.params.id,
-    longURL: urlDatabase[req.params.id].longURL
-  };
-  if(templateVars.user){
-    res.render("urls_show", templateVars);
-  }else{
-    res.redirect("/login");
+  if(urlDatabase[req.params.id]){
+    //check for the user is logged in
+    if(users[req.session.userID]){
+      let templateVars = {
+        user: users[req.session.userID],
+        shortURL: req.params.id,
+        longURL: urlDatabase[req.params.id].longURL
+      };
+       res.render("urls_show", templateVars);
+    } else{
+      res.redirect("/login");
+    }
+
+  } else{
+    res.send("Sorry! The Id does not exists in the database.")
   }
 });
 
 //GET URLS/:shortURL
 app.get("/u/:shortURL", (req, res) => {
-  let longURL = urlDatabase[req.params.shortURL].longURL;
-  if(longURL){
-    res.redirect(longURL);
+
+  if(urlDatabase[req.params.shortURL]){
+    let longURL = urlDatabase[req.params.shortURL].longURL;
+    if(longURL){
+      res.redirect(longURL);
+    }else{
+      res.send("The Long URL does not exitst");
+    }
   }else{
-    res.status(404).end();
+    res.send("The given ID does not exist");
   }
 });
 
-//Check user registered
-function validUser(newuser){
-  if(newuser.email === ""  || bcrypt.compareSync("", newuser.password)){
-    return false;
-  }
+//Check user email registered
+function validUser(email){
   for(user in users){
-    if(users[user].email === newuser.email){
-      return false;
+    if(users[user].email === email){
+      return true;
     }
   }
-  return true;
 }
 
 //POST Register
 app.post("/register", (req, res) => {
-  // const password = req.body.password;
-  const hashedPassword = bcrypt.hashSync(req.body.password, 10);
-  const newUser = {
-    id: generateRandomString(),
-    email: req.body.email,
-    password: hashedPassword
-  }
-  if(validUser(newUser)){
-    users[newUser.id] = newUser;
-    req.session.userID = newUser.id;
-    res.redirect('/urls');
-  }else{
-    res.status(400).send('Try to register again!');
+  let email = req.body.email;
+  let password = req.body.password;
+
+  if(!email || !password) {
+    res.send('Sorry! Cant register. Both email and password are required');
+
+  } else {
+    if(validUser(email)){
+      res.send('Sorry!. Email already taken');
+
+    } else {
+      const hashedPassword = bcrypt.hashSync(req.body.password, 10);
+      const newUser = {
+        id: generateRandomString(),
+        email: req.body.email,
+        password: hashedPassword
+      };
+      users[newUser.id] = newUser;
+      req.session.userID = newUser.id;
+      res.redirect('/urls');
+    }
   }
 });
 
@@ -222,6 +237,7 @@ app.post("/urls/:id/delete", (req, res) => {
 function checkUser(email){
   for(const userId in users){
     const user = users[userId];
+
     if(user.email === email){
       return user;
     }
@@ -231,9 +247,8 @@ function checkUser(email){
 //POST login
 app.post("/login", (req,res) => {
   const user = checkUser(req.body.email);
-  const hashedPassword = bcrypt.hashSync(req.body.password, 10);
-  if(!user || !bcrypt.compareSync(user.password, hashedPassword)){
-    res.status(400).send('YOU SHALL NOT PASS!');
+  if(!user || !bcrypt.compareSync(req.body.password, user.password)){
+    res.status(400).send('YOU SHALL NOT PASS!....Log in input is incorrect');
   }else{
     req.session.userID = user.id;
     res.redirect('/urls');
