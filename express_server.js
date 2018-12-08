@@ -5,7 +5,6 @@ const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 
-//use cookie session instead
 app.use(cookieSession({
   name: 'session',
   keys: ['key1', 'key2'],
@@ -14,13 +13,13 @@ app.use(cookieSession({
 
 app.use(bodyParser.urlencoded({extended: false }));
 
-//connect view ejs with server.js
 app.set("view engine", "ejs");
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
 
+//testing url db
 const urlDatabase = {
   "b2xVn2": {
     shortURL: "b2xVn2",
@@ -39,6 +38,7 @@ const urlDatabase = {
   }
 };
 
+//testing user db
 const users = {
   "userRandomID": {
     id: "userRandomID",
@@ -58,13 +58,12 @@ const users = {
 };
 
 app.get("/", (req, res) => {
-  res.send(`Hello! WELCOME TO HELL!`);
+  res.send(`Hello! WELCOME TO TinyApp!`);
 });
 
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
-
 
 //generate random short url
 function generateRandomString() {
@@ -131,7 +130,6 @@ app.get("/urls/new", (req, res) => {
 //GET URLS/:id
 app.get("/urls/:id", (req, res) => {
   if(urlDatabase[req.params.id]){
-    //check for the user is logged in
     if(users[req.session.userID]){
       let templateVars = {
         user: users[req.session.userID],
@@ -139,18 +137,16 @@ app.get("/urls/:id", (req, res) => {
         longURL: urlDatabase[req.params.id].longURL
       };
        res.render("urls_show", templateVars);
-    } else{
+    }else {
       res.redirect("/login");
     }
-
-  } else{
+  }else {
     res.send("Sorry! The Id does not exists in the database.")
   }
 });
 
 //GET URLS/:shortURL
 app.get("/u/:shortURL", (req, res) => {
-
   if(urlDatabase[req.params.shortURL]){
     let longURL = urlDatabase[req.params.shortURL].longURL;
     if(longURL){
@@ -179,12 +175,10 @@ app.post("/register", (req, res) => {
 
   if(!email || !password) {
     res.send('Sorry! Cant register. Both email and password are required');
-
-  } else {
+  }else {
     if(validUser(email)){
       res.send('Sorry!. Email already taken');
-
-    } else {
+    }else {
       const hashedPassword = bcrypt.hashSync(req.body.password, 10);
       const newUser = {
         id: generateRandomString(),
@@ -200,7 +194,6 @@ app.post("/register", (req, res) => {
 
 // POST new url to database
 app.post("/urls", (req, res) => {
-
   if(users[req.session.userID]) {
     let urlId = generateRandomString();
     let longURL = req.body.longURL;
@@ -237,7 +230,6 @@ app.post("/urls/:id/delete", (req, res) => {
 function checkUser(email){
   for(const userId in users){
     const user = users[userId];
-
     if(user.email === email){
       return user;
     }
