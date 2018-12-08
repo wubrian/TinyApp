@@ -13,8 +13,6 @@
   </style>
 </head>
 <body>
-<% include partials/_header %>
-
   <form action="/login" method="POST">
     <label for="Email">
       Email
@@ -26,6 +24,8 @@
     <input class="login" type="password" name="password" >
     <input type="submit" value="Login">
   </form>
+  <br/>
+  <a href='/register'>Register</a>
 
 </body>
 </html>
